@@ -48,12 +48,6 @@
             letter-spacing: 1px;
         }
 
-        .site-logo {
-            height: 44px;
-            width: auto;
-            display: block;
-        }
-
         .title-text {
             background: linear-gradient(135deg, #fff, #ffe0b3);
             background-clip: text;
@@ -89,7 +83,6 @@
             color: #fff5e6;
             text-decoration: none;
             display: inline-block;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .nav-btn:active {
@@ -114,7 +107,6 @@
             min-height: 500px;
         }
 
-        /* 首页样式 */
         .welcome-card {
             text-align: center;
             background: rgba(255, 255, 255, 0.85);
@@ -152,7 +144,6 @@
             border-radius: 60px;
         }
 
-        /* 市政厅介绍卡片 */
         .intro-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
@@ -185,7 +176,6 @@
             margin-bottom: 12px;
         }
 
-        /* 部门列表 */
         .dept-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -219,7 +209,6 @@
             line-height: 1.5;
         }
 
-        /* 公告样式 */
         .notice-list {
             display: flex;
             flex-direction: column;
@@ -279,11 +268,6 @@
             margin-top: 12px;
         }
 
-        .notice-content p {
-            margin-bottom: 8px;
-        }
-
-        /* 联系卡片 */
         .contact-card {
             background: rgba(255, 255, 255, 0.85);
             border-radius: 32px;
@@ -297,7 +281,6 @@
             color: #c76e3d;
         }
 
-        /* 反馈卡片 */
         .feedback-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
@@ -349,6 +332,11 @@
             background: #a93226;
         }
 
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
         .success-message {
             margin-top: 20px;
             padding: 15px;
@@ -359,10 +347,8 @@
             display: none;
         }
 
-        /* 页面容器 */
         .page {
             display: none;
-            scroll-margin-top: 2000px;
         }
 
         @media (max-width: 650px) {
@@ -395,7 +381,6 @@
 <div class="app-container">
     <div class="nav-bar">
         <div class="site-title">
-            <img src="HuanshiMetroLogo.png" class="site-logo" alt="幻市Logo" onerror="this.style.display='none'">
             <span class="title-text">🏛️ 幻市市政厅</span>
             <small>制作者：wch蜡笔</small>
         </div>
@@ -472,9 +457,7 @@
 
         <!-- 市政公告 -->
         <div id="noticeView" class="page">
-            <div class="notice-list" id="noticeList">
-                <!-- 公告由JS生成 -->
-            </div>
+            <div class="notice-list" id="noticeList"></div>
         </div>
 
         <!-- 联系我们 -->
@@ -494,26 +477,31 @@
             </div>
         </div>
 
-        <!-- 意见反馈 - 表单直接嵌入，无需第三方平台操作 -->
+        <!-- 意见反馈 -->
         <div id="feedbackView" class="page">
             <div class="feedback-card">
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">
                     📝 意见反馈
                 </div>
-                <form id="feedbackForm" action="https://api.web3forms.com/submit" method="POST">
-    			<input type="hidden" name="access_key" value="be1b0419e3c34ae1a591a89391c8afb2">
-   			 <div class="form-group">
-        			<label>你的名字</label>
-        			<input type="text" name="name" required>
-    			</div>
-    			<div class="form-group">
-        			<label>反馈内容</label>
-        			<textarea name="message" rows="5" required></textarea>
-    			</div>
-    			<button type="submit" class="submit-btn">提交反馈</button>
-		</form>
-                <div id="feedbackSuccess" class="success-message">
-                    ✅ 提交成功，感谢您对幻市的支持！
+                
+                <div id="feedbackFormArea">
+                    <div class="form-group">
+                        <label>你的名字 / 昵称</label>
+                        <input type="text" id="fbName" placeholder="例如：热心市民">
+                    </div>
+                    <div class="form-group">
+                        <label>联系方式（选填，便于回复）</label>
+                        <input type="text" id="fbContact" placeholder="微信 / 邮箱 / 电话">
+                    </div>
+                    <div class="form-group">
+                        <label>反馈内容</label>
+                        <textarea id="fbMessage" rows="5" placeholder="请写下您的意见或建议..."></textarea>
+                    </div>
+                    <button class="submit-btn" id="submitFeedbackBtn">📨 提交反馈</button>
+                </div>
+                
+                <div id="feedbackSuccessMsg" class="success-message">
+                    ✅ 提交成功！市政厅已收到您的反馈，感谢您对幻市的支持！
                 </div>
             </div>
         </div>
@@ -527,26 +515,19 @@
             title: "幻林高速公路正式立项",
             author: "苹果城市管理",
             date: "2026-4-22 20:06:53",
-            content: `<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p>
-                       <p>幻市市政厅</p>
-                       <p>2026年4月22日</p>`
+            content: "<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p><p>幻市市政厅</p><p>2026年4月22日</p>"
         },
         {
             title: "幻市市政厅网站正式启用",
             author: "wch蜡笔",
             date: "2026-4-22 17:50:00",
-            content: `<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p>
-                       <p>网址：https://wch-crayon.github.io/HuanshiGov/#homeView</p>
-                       <p>幻市市政厅</p>
-                       <p>2026年4月22日</p>`
+            content: "<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p><p>网址：https://wch-crayon.github.io/HuanshiGov/</p><p>幻市市政厅</p><p>2026年4月22日</p>"
         },
         {
             title: "幻市市政厅网页正式启用",
             author: "wch蜡笔",
             date: "2026-4-21 22:25:00",
-            content: `<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p>
-                       <p>幻市市政厅</p>
-                       <p>2026年4月21日</p>`
+            content: "<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p><p>幻市市政厅</p><p>2026年4月21日</p>"
         }
     ];
 
@@ -555,18 +536,7 @@
         if (!container) return;
         let html = '';
         for (let n of notices) {
-            html += `
-                <div class="notice-card">
-                    <div class="notice-header">
-                        <div class="notice-title">${escapeHtml(n.title)}</div>
-                        <div class="notice-meta">
-                            <span class="notice-author">${escapeHtml(n.author)}</span>
-                            <span class="notice-date">${escapeHtml(n.date)}</span>
-                        </div>
-                    </div>
-                    <div class="notice-content">${n.content}</div>
-                </div>
-            `;
+            html += '<div class="notice-card"><div class="notice-header"><div class="notice-title">' + escapeHtml(n.title) + '</div><div class="notice-meta"><span class="notice-author">' + escapeHtml(n.author) + '</span><span class="notice-date">' + escapeHtml(n.date) + '</span></div></div><div class="notice-content">' + n.content + '</div></div>';
         }
         container.innerHTML = html;
     }
@@ -581,7 +551,6 @@
         });
     }
 
-    // 高亮当前选中的按钮
     function setActiveButton() {
         var hash = window.location.hash || '#homeView';
         var btns = document.querySelectorAll('.nav-btn');
@@ -596,7 +565,6 @@
         }
     }
 
-    // 页面显示逻辑
     function showPage() {
         var hash = window.location.hash;
         var pages = document.querySelectorAll('.page');
@@ -619,34 +587,72 @@
         setActiveButton();
     }
 
-    // 反馈表单提交处理
-    const feedbackForm = document.getElementById('feedbackForm');
-    const feedbackSuccess = document.getElementById('feedbackSuccess');
+    // ========== 意见反馈 - PushPlus 推送 ==========
+    const PUSHPLUS_TOKEN = 'be1b0419e3c34ae1a591a89391c8afb2';
+    
+    const submitBtn = document.getElementById('submitFeedbackBtn');
+    const formArea = document.getElementById('feedbackFormArea');
+    const successMsg = document.getElementById('feedbackSuccessMsg');
 
-    if (feedbackForm) {
-        feedbackForm.addEventListener('submit', function(e) {
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            fetch(feedbackForm.action, {
+            const name = document.getElementById('fbName').value.trim();
+            const contact = document.getElementById('fbContact').value.trim();
+            const message = document.getElementById('fbMessage').value.trim();
+            
+            if (!name) {
+                alert('请填写你的名字');
+                return;
+            }
+            if (!message) {
+                alert('请填写反馈内容');
+                return;
+            }
+            
+            submitBtn.textContent = '提交中...';
+            submitBtn.disabled = true;
+            
+            const pushContent = '📋 幻市市政厅 · 新意见反馈\n\n👤 姓名：' + name + '\n📞 联系方式：' + (contact || '未填写') + '\n📝 反馈内容：\n' + message + '\n\n⏰ 时间：' + new Date().toLocaleString('zh-CN');
+            
+            fetch('https://www.pushplus.plus/send', {
                 method: 'POST',
-                body: new FormData(feedbackForm),
                 headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    feedbackForm.style.display = 'none';
-                    feedbackSuccess.style.display = 'block';
-                    setTimeout(() => {
-                        feedbackForm.reset();
-                        feedbackForm.style.display = 'block';
-                        feedbackSuccess.style.display = 'none';
-                    }, 3000);
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token: PUSHPLUS_TOKEN,
+                    title: '🏛️ 幻市市政厅新反馈',
+                    content: pushContent,
+                    template: 'txt'
+                })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(result) {
+                if (result.code === 200) {
+                    formArea.style.display = 'none';
+                    successMsg.style.display = 'block';
+                    
+                    document.getElementById('fbName').value = '';
+                    document.getElementById('fbContact').value = '';
+                    document.getElementById('fbMessage').value = '';
+                    
+                    setTimeout(function() {
+                        formArea.style.display = 'block';
+                        successMsg.style.display = 'none';
+                    }, 4000);
                 } else {
-                    alert('提交失败，请稍后重试');
+                    alert('提交失败：' + (result.msg || '未知错误'));
                 }
-            }).catch(error => {
-                alert('提交失败，请检查网络连接');
+            })
+            .catch(function(error) {
+                console.error('提交错误:', error);
+                alert('网络错误，请检查网络后重试');
+            })
+            .finally(function() {
+                submitBtn.textContent = '📨 提交反馈';
+                submitBtn.disabled = false;
             });
         });
     }
