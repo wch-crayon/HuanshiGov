@@ -73,12 +73,13 @@
         .nav-buttons {
             display: flex;
             gap: 18px;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
             background: transparent;
             border: none;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             padding: 8px 18px;
             border-radius: 40px;
@@ -296,7 +297,69 @@
             color: #c76e3d;
         }
 
-        /* 页面容器 - 加上滚动修正 */
+        /* 反馈卡片 */
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 2rem;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b03a2e;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #f9e0a0;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #a93226;
+        }
+
+        .success-message {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 16px;
+            text-align: center;
+            color: #2e7d32;
+            display: none;
+        }
+
+        /* 页面容器 */
         .page {
             display: none;
             scroll-margin-top: 2000px;
@@ -321,6 +384,9 @@
             .dept-grid {
                 grid-template-columns: 1fr;
             }
+            .nav-buttons {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -338,11 +404,12 @@
             <a href="#aboutView" class="nav-btn" id="aboutBtn">📖 市政介绍</a>
             <a href="#noticeView" class="nav-btn" id="noticeBtn">📢 市政公告</a>
             <a href="#contactView" class="nav-btn" id="contactBtn">📞 联系我们</a>
+            <a href="#feedbackView" class="nav-btn" id="feedbackBtn">📝 意见反馈</a>
         </div>
     </div>
 
     <div class="content-pane">
-        <!-- 首页 - 只有这里有欢迎卡片 -->
+        <!-- 首页 -->
         <div id="homeView" class="page" style="display: block;">
             <div class="welcome-card">
                 <div class="slogan">
@@ -357,7 +424,7 @@
             </div>
         </div>
 
-        <!-- 市政介绍 - 没有欢迎卡片 -->
+        <!-- 市政介绍 -->
         <div id="aboutView" class="page">
             <div class="intro-card">
                 <div class="intro-title">
@@ -403,14 +470,14 @@
             </div>
         </div>
 
-        <!-- 市政公告 - 没有欢迎卡片 -->
+        <!-- 市政公告 -->
         <div id="noticeView" class="page">
             <div class="notice-list" id="noticeList">
                 <!-- 公告由JS生成 -->
             </div>
         </div>
 
-        <!-- 联系我们 - 没有欢迎卡片 -->
+        <!-- 联系我们 -->
         <div id="contactView" class="page">
             <div class="contact-card">
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">
@@ -426,6 +493,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- 意见反馈 -->
+        <div id="feedbackView" class="page">
+            <div class="feedback-card">
+                <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">
+                    📝 意见反馈
+                </div>
+                <form id="feedbackForm" action="https://formspree.io/f/mwplgdqg" method="POST">
+                    <div class="form-group">
+                        <label>你的名字</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>反馈内容</label>
+                        <textarea name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">提交反馈</button>
+                </form>
+                <div id="feedbackSuccess" class="success-message">
+                    ✅ 提交成功，感谢您对幻市的支持！
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -433,21 +523,29 @@
     // 公告数据
     const notices = [
         {
+            title: "幻林高速公路正式立项",
+            author: "苹果城市管理",
+            date: "2026-4-22 20:06:53",
+            content: `<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p>
+                       <p>幻市市政厅</p>
+                       <p>2026年4月22日</p>`
+        },
+        {
             title: "幻市市政厅网站正式启用",
             author: "wch蜡笔",
             date: "2026-4-22 17:50:00",
             content: `<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p>
-			   <p>网址:https://wch-crayon.github.io/HuanshiGov/#homeView</p>
-			   <p>幻市市政厅</p>
-			   <p>2026年4月22日</p>`
+                       <p>网址：https://wch-crayon.github.io/HuanshiGov/#homeView</p>
+                       <p>幻市市政厅</p>
+                       <p>2026年4月22日</p>`
         },
-	{
+        {
             title: "幻市市政厅网页正式启用",
             author: "wch蜡笔",
             date: "2026-4-21 22:25:00",
             content: `<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p>
-			   <p>幻市市政厅</p>
-			   <p>2026年4月21日</p>`
+                       <p>幻市市政厅</p>
+                       <p>2026年4月21日</p>`
         }
     ];
 
@@ -511,11 +609,45 @@
             renderNotices();
         } else if (hash === '#contactView') {
             document.getElementById('contactView').style.display = 'block';
+        } else if (hash === '#feedbackView') {
+            document.getElementById('feedbackView').style.display = 'block';
         } else {
             document.getElementById('homeView').style.display = 'block';
             window.location.hash = '#homeView';
         }
         setActiveButton();
+    }
+
+    // 反馈表单提交处理
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedbackSuccess = document.getElementById('feedbackSuccess');
+
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch(feedbackForm.action, {
+                method: 'POST',
+                body: new FormData(feedbackForm),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    feedbackForm.style.display = 'none';
+                    feedbackSuccess.style.display = 'block';
+                    setTimeout(() => {
+                        feedbackForm.reset();
+                        feedbackForm.style.display = 'block';
+                        feedbackSuccess.style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('提交失败，请稍后重试');
+                }
+            }).catch(error => {
+                alert('提交失败，请检查网络连接');
+            });
+        });
     }
 
     window.addEventListener('load', function() {
