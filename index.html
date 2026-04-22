@@ -404,7 +404,7 @@
             <a href="#aboutView" class="nav-btn" id="aboutBtn">📖 市政介绍</a>
             <a href="#noticeView" class="nav-btn" id="noticeBtn">📢 市政公告</a>
             <a href="#contactView" class="nav-btn" id="contactBtn">📞 联系我们</a>
-            <a href="#feedbackView" class="nav-btn" id="feedbackBtn">📝 意见反馈</a>
+            <a href="mailto:wchlabi@163.com?subject=幻市市政厅官网反馈&body=请填写您的名字和反馈内容：%0D%0A%0D%0A姓名：%0D%0A内容：" class="nav-btn" id="feedbackBtn">📝 意见反馈</a>
         </div>
     </div>
 
@@ -500,17 +500,18 @@
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">
                     📝 意见反馈
                 </div>
-                <form id="feedbackForm" action="https://formspree.io/f/mwplgdqg" method="POST">
-                    <div class="form-group">
-                        <label>你的名字</label>
-                        <input type="text" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>反馈内容</label>
-                        <textarea name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">提交反馈</button>
-                </form>
+                <form id="feedbackForm" action="https://api.web3forms.com/submit" method="POST">
+    			<input type="hidden" name="access_key" value="你的密钥">
+   			 <div class="form-group">
+        			<label>你的名字</label>
+        			<input type="text" name="name" required>
+    			</div>
+    			<div class="form-group">
+        			<label>反馈内容</label>
+        			<textarea name="message" rows="5" required></textarea>
+    			</div>
+    			<button type="submit" class="submit-btn">提交反馈</button>
+		</form>
                 <div id="feedbackSuccess" class="success-message">
                     ✅ 提交成功，感谢您对幻市的支持！
                 </div>
