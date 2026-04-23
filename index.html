@@ -101,26 +101,125 @@
             min-height: 500px;
         }
 
+        /* ========== 新增：首页双栏布局 ========== */
+        .home-grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .carousel-box {
+            flex: 2;
+            min-width: 260px;
+            height: 320px;
+            background: #2c3e2c;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .carousel-box img.active {
+            opacity: 1;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .carousel-btn span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .carousel-btn span.active {
+            background: #f39c12;
+        }
+
+        .notice-side {
+            flex: 1.2;
+            min-width: 260px;
+            height: 320px;
+            background: rgba(255,255,255,0.92);
+            border-radius: 24px;
+            padding: 16px;
+            border: 1px solid rgba(243,156,18,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notice-side h3 {
+            color: #b03a2e;
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+            margin-bottom: 12px;
+        }
+
+        .notice-side .notice-compact-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .notice-side .notice-compact-list li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #f9e0c0;
+            cursor: pointer;
+        }
+
+        .notice-side .notice-compact-list li:hover {
+            background: #fff5e6;
+            padding-left: 8px;
+        }
+
+        .notice-side .notice-compact-list .title {
+            font-weight: bold;
+            color: #b03a2e;
+            font-size: 0.9rem;
+        }
+
+        .notice-side .notice-compact-list .meta {
+            font-size: 0.7rem;
+            color: #c76e3d;
+            margin-top: 4px;
+        }
+
+        /* 原首页卡片保留，但去掉大标题，只留服务语 */
         .welcome-card {
             text-align: center;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
             border-radius: 48px;
-            padding: 3rem 2rem;
+            padding: 2rem;
             border: 1px solid rgba(243, 156, 18, 0.3);
-        }
-
-        .slogan {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: #b03a2e;
-            margin-bottom: 20px;
         }
 
         .service-text {
             font-size: 1.2rem;
             color: #c76e3d;
-            margin-top: 25px;
+            margin-top: 0;
             border-top: 2px dashed #f9e0a0;
             display: inline-block;
             padding-top: 18px;
@@ -273,12 +372,19 @@
             display: none;
         }
 
+        @media (max-width: 700px) {
+            .home-grid {
+                flex-direction: column;
+            }
+            .carousel-box, .notice-side {
+                height: auto;
+                min-height: 280px;
+            }
+        }
+
         @media (max-width: 650px) {
             .nav-bar {
                 text-align: center;
-            }
-            .slogan {
-                font-size: 1.7rem;
             }
             .content-pane {
                 padding: 1.5rem;
@@ -318,10 +424,24 @@
     </div>
 
     <div class="content-pane">
-        <!-- 首页 -->
+        <!-- 首页（已改造：轮播+最新公告，去掉大标题） -->
         <div id="homeView" class="page" style="display: block;">
+            <div class="home-grid">
+                <!-- 轮播图 -->
+                <div class="carousel-box" id="carousel">
+                    <img src="https://picsum.photos/id/104/600/400" alt="幻市风景" class="active">
+                    <img src="https://picsum.photos/id/15/600/400" alt="幻林高速">
+                    <img src="https://picsum.photos/id/96/600/400" alt="市政厅">
+                    <div class="carousel-btn" id="carouselDots"></div>
+                </div>
+                <!-- 右侧最新公告 -->
+                <div class="notice-side">
+                    <h3>📢 最新公告</h3>
+                    <ul class="notice-compact-list" id="latestList"></ul>
+                </div>
+            </div>
+            <!-- 保留原服务语卡片（去掉大标题） -->
             <div class="welcome-card">
-                <div class="slogan">✨ 幻市市政厅 ✨</div>
                 <div class="service-text">为民服务 · 共建美好幻市</div>
                 <div style="margin-top: 30px;">
                     <span class="credit-footer">🏛️ 幻市市政厅 | 服务市民 · 用心用情</span>
@@ -329,7 +449,7 @@
             </div>
         </div>
 
-        <!-- 市政介绍 -->
+        <!-- 市政介绍（完全没动） -->
         <div id="aboutView" class="page">
             <div class="intro-card">
                 <div class="intro-title">🏛️ 幻市市政厅简介</div>
@@ -353,12 +473,12 @@
             </div>
         </div>
 
-        <!-- 市政公告 -->
+        <!-- 市政公告（完全没动） -->
         <div id="noticeView" class="page">
             <div class="notice-list" id="noticeList"></div>
         </div>
 
-        <!-- 联系我们 -->
+        <!-- 联系我们（完全没动） -->
         <div id="contactView" class="page">
             <div class="contact-card">
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">📞 联系我们</div>
@@ -376,50 +496,54 @@
 </div>
 
 <script>
-    // ==================== 公告数据（在这里编辑） ====================
+    // ==================== 公告数据（在这里编辑，完全按您的格式） ====================
     const notices = [
+        { 
+		title: "关于广泉方面盗窃幻市方面财产", 
+		author: "wch蜡笔", date: "2026-4-23 19:32:38",
+		content: "<p>由于近期广泉方面盗窃幻市在广泉建设的幻市大厦，现特发公告对广泉方面予以强烈的谴责</p>			<p>幻市市政厅</p>
+				<p>2026年4月23日</p>" 
+	},
         {
-            title: "关于广泉方面盗窃幻市方面财产",
-            author: "wch蜡笔",
-            date: "2026-4-23 19:32:38",
-            content: "<p>由于近期广泉方面盗窃幻市在广泉建设的幻市大厦，现特发公告对广泉方面予以强烈的谴责</p><p>幻市市政厅</p><p>2026年4月23日</p>"
-        },
+		title: "关于对幻市成员进行管控的通知",
+		author: "wch蜡笔", date: "2026-4-23 19:32:26",
+		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，幻市方面将颁发最新条令，在未经允许的情况下，严禁任何幻市成员与任何广泉成员或与广泉成员存在任何形式上存在任何交往的任何人或单位存在任何形式上存在任何交往，违者视为自动退出幻市</p>
+				<p>幻市市政厅</p><p>2026年4月23日</p>" },
         {
-            title: "关于对幻市成员进行管控的通知",
-            author: "wch蜡笔",
-            date: "2026-4-23 19:32:26",
-            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，幻市方面将颁发最新条令，在未经允许的情况下，严禁任何幻市成员与任何广泉成员或与广泉成员存在任何形式上存在任何交往的任何人或单位存在任何形式上存在任何交往，违者视为自动退出幻市</p><p>幻市市政厅</p><p>2026年4月23日</p>"
-        },
+		 title: "关于幻市黑名单更新", author: "wch蜡笔",
+		date: "2026-4-23 19:32:17",
+		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现将黑名单增加至广泉所有成员及与广泉市存在任何形式的任何合作的任何人或单位</p>
+				<p>幻市市政厅</p>
+				<p>2026年4月23日</p>"
+	},
         {
-            title: "关于幻市黑名单更新",
-            author: "wch蜡笔",
-            date: "2026-4-23 19:32:17",
-            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现将黑名单增加至广泉所有成员及与广泉市存在任何形式的任何合作的任何人或单位</p><p>幻市市政厅</p><p>2026年4月23日</p>"
-        },
+		title: "关于与广泉方面的合作终止",
+		author: "wch蜡笔", date: "2026-4-23 19:32:08",
+		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现终止与广泉方面任何形式的任何合作，包括但不限于：幻林高速铁路广泉段，幻林高速公路广泉段，幻广德铁路</p>
+				<p>幻市市政厅</p>
+				<p>2026年4月23日</p>" },
         {
-            title: "关于与广泉方面的合作终止",
-            author: "wch蜡笔",
-            date: "2026-4-23 19:32:08",
-            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现终止与广泉方面任何形式的任何合作，包括但不限于：幻林高速铁路广泉段，幻林高速公路广泉段，幻广德铁路</p><p>幻市市政厅</p><p>2026年4月23日</p>"
-        },
+		title: "幻林高速公路正式立项",
+		author: "苹果城市管理",
+		date: "2026-4-22 20:06:53",
+		content: "<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p>
+				<p>幻市市政厅</p>
+				<p>2026年4月22日</p>"
+	},
         {
-            title: "幻林高速公路正式立项",
-            author: "苹果城市管理",
-            date: "2026-4-22 20:06:53",
-            content: "<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p><p>幻市市政厅</p><p>2026年4月22日</p>"
-        },
+		title: "幻市市政厅网站正式启用",
+		author: "wch蜡笔", date: "2026-4-22 17:50:00",
+		content: "<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p>
+				<p>网址：https://wch-crayon.github.io/HuanshiGov/</p>
+				<p>幻市市政厅</p>
+				<p>2026年4月22日</p>" },
         {
-            title: "幻市市政厅网站正式启用",
-            author: "wch蜡笔",
-            date: "2026-4-22 17:50:00",
-            content: "<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p><p>网址：https://wch-crayon.github.io/HuanshiGov/</p><p>幻市市政厅</p><p>2026年4月22日</p>"
-        },
-        {
-            title: "幻市市政厅网页正式启用",
-            author: "wch蜡笔",
-            date: "2026-4-21 22:25:00",
-            content: "<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p><p>幻市市政厅</p><p>2026年4月21日</p>"
-        }
+		title: "幻市市政厅网页正式启用",
+		author: "wch蜡笔",
+		date: "2026-4-21 22:25:00",
+		content: "<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p>
+				<p>幻市市政厅</p>
+				<p>2026年4月21日</p>" }
     ];
     // ==================== 公告数据结束 ====================
 
@@ -439,6 +563,21 @@
                 '<div class="notice-content">' + n.content + '</div>' +
             '</div>';
         }
+        container.innerHTML = html;
+    }
+
+    // 渲染右侧最新4条公告
+    function renderLatest() {
+        const container = document.getElementById('latestList');
+        if (!container) return;
+        let latest = [...notices].reverse().slice(0, 4);
+        let html = '';
+        latest.forEach(n => {
+            html += '<li onclick="location.href=\'#noticeView\'">' +
+                        '<div class="title">📌 ' + escapeHtml(n.title) + '</div>' +
+                        '<div class="meta">✍️ ' + escapeHtml(n.author) + ' &nbsp; 📅 ' + escapeHtml(n.date) + '</div>' +
+                    '</li>';
+        });
         container.innerHTML = html;
     }
 
@@ -469,19 +608,98 @@
         
         if (hash === '#aboutView') {
             document.getElementById('aboutView').style.display = 'block';
+            stopCarousel();
         } else if (hash === '#noticeView') {
             document.getElementById('noticeView').style.display = 'block';
             renderNotices();
+            stopCarousel();
         } else if (hash === '#contactView') {
             document.getElementById('contactView').style.display = 'block';
+            stopCarousel();
         } else {
             document.getElementById('homeView').style.display = 'block';
             window.location.hash = '#homeView';
+            renderLatest();
+            startCarousel();
         }
         setActiveButton();
     }
 
-    window.addEventListener('load', showPage);
+    // ========== 轮播图逻辑 ==========
+    let currentIndex = 0;
+    let carouselTimer = null;
+    let carouselImgs = [];
+
+    function initCarousel() {
+        const carouselBox = document.getElementById('carousel');
+        if (!carouselBox) return;
+        carouselImgs = Array.from(carouselBox.querySelectorAll('img'));
+        const dotsContainer = document.getElementById('carouselDots');
+        if (!dotsContainer) return;
+        
+        let dotsHtml = '';
+        for (let i = 0; i < carouselImgs.length; i++) {
+            dotsHtml += '<span class="' + (i === 0 ? 'active' : '') + '" data-index="' + i + '"></span>';
+        }
+        dotsContainer.innerHTML = dotsHtml;
+        
+        document.querySelectorAll('#carouselDots span').forEach(dot => {
+            dot.addEventListener('click', function(e) {
+                let idx = parseInt(this.getAttribute('data-index'));
+                if (!isNaN(idx)) goToSlide(idx);
+                resetCarouselTimer();
+            });
+        });
+        
+        startCarousel();
+    }
+    
+    function goToSlide(index) {
+        if (!carouselImgs.length) return;
+        if (index < 0) index = 0;
+        if (index >= carouselImgs.length) index = 0;
+        
+        carouselImgs.forEach((img, i) => {
+            img.classList.toggle('active', i === index);
+        });
+        
+        const dots = document.querySelectorAll('#carouselDots span');
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+        
+        currentIndex = index;
+    }
+    
+    function nextSlide() {
+        let next = currentIndex + 1;
+        if (next >= carouselImgs.length) next = 0;
+        goToSlide(next);
+    }
+    
+    function startCarousel() {
+        if (carouselTimer) clearInterval(carouselTimer);
+        if (carouselImgs.length > 1) {
+            carouselTimer = setInterval(nextSlide, 4000);
+        }
+    }
+    
+    function resetCarouselTimer() {
+        if (carouselTimer) clearInterval(carouselTimer);
+        startCarousel();
+    }
+    
+    function stopCarousel() {
+        if (carouselTimer) {
+            clearInterval(carouselTimer);
+            carouselTimer = null;
+        }
+    }
+
+    window.addEventListener('load', function() {
+        initCarousel();
+        showPage();
+    });
     window.addEventListener('hashchange', showPage);
 </script>
 </body>
