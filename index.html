@@ -311,14 +311,12 @@
         <!-- 首页 -->
         <div id="homeView" class="page" style="display: block;">
             <div class="home-grid">
-                <!-- 轮播 -->
                 <div class="carousel-box" id="carousel">
                     <img src="https://picsum.photos/id/104/600/400" alt="幻市风景" class="active">
                     <img src="https://picsum.photos/id/15/600/400" alt="幻林高速">
                     <img src="https://picsum.photos/id/96/600/400" alt="市政厅">
                     <div class="carousel-btn" id="carouselDots"></div>
                 </div>
-                <!-- 右侧最新公告 -->
                 <div class="notice-side">
                     <h3>📢 最新公告</h3>
                     <ul class="notice-list" id="latestList"></ul>
@@ -330,7 +328,6 @@
             </div>
         </div>
 
-        <!-- 市政介绍 -->
         <div id="aboutView" class="page">
             <div class="intro-card">
                 <div class="intro-title">🏛️ 幻市市政厅简介</div>
@@ -353,12 +350,10 @@
             </div>
         </div>
 
-        <!-- 公告列表页 -->
         <div id="noticeView" class="page">
             <div id="fullNoticeList"></div>
         </div>
 
-        <!-- 联系我们 -->
         <div id="contactView" class="page">
             <div class="contact-card">
                 <div class="intro-title" style="border-left-color:#f39c12; justify-content:center;">📞 联系我们</div>
@@ -374,7 +369,7 @@
 </div>
 
 <script>
-    // 公告数据（严格按照您的格式）
+    // ==================== 公告数据（您的格式） ====================
     const notices = [
         { 
             title: "关于广泉方面盗窃幻市方面财产", 
@@ -436,7 +431,6 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
     }
 
-    // 渲染最新4条
     function renderLatest() {
         let latest = [...notices].reverse().slice(0,4);
         let html = '';
@@ -446,10 +440,10 @@
                         <div class="meta">✍️ ${escapeHtml(n.author)} &nbsp; 📅 ${escapeHtml(n.date)}</div>
                      </li>`;
         });
-        document.getElementById('latestList').innerHTML = html;
+        let el = document.getElementById('latestList');
+        if (el) el.innerHTML = html;
     }
 
-    // 渲染完整公告页
     function renderFullNotices() {
         let html = '';
         [...notices].reverse().forEach(n => {
@@ -461,20 +455,25 @@
                         <div class="notice-content">${n.content}</div>
                     </div>`;
         });
-        document.getElementById('fullNoticeList').innerHTML = html;
+        let el = document.getElementById('fullNoticeList');
+        if (el) el.innerHTML = html;
     }
 
-    // ========== 轮播图逻辑（重写，保证稳定） ==========
+    // ========== 轮播图 ==========
     let currentIndex = 0;
     let carouselTimer = null;
-    const carouselBox = document.getElementById('carousel');
-    const carouselImgs = carouselBox ? carouselBox.querySelectorAll('img') : [];
-    const dotsContainer = document.getElementById('carouselDots');
+    let carouselImgs = [];
+    let dotsContainer = null;
 
     function initCarousel() {
-        if (!carouselImgs.length) return;
+        let carouselBox = document.getElementById('carousel');
+        if (!carouselBox) return;
         
-        // 生成dots
+        carouselImgs = Array.from(carouselBox.querySelectorAll('img'));
+        dotsContainer = document.getElementById('carouselDots');
+        
+        if (carouselImgs.length === 0) return;
+        
         let dotsHtml = '';
         for (let i = 0; i < carouselImgs.length; i++) {
             dotsHtml += `<span class="${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
@@ -482,19 +481,20 @@
         if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
         
         // 绑定点击事件
-        document.querySelectorAll('#carouselDots span').forEach(dot => {
+        let dots = document.querySelectorAll('#carouselDots span');
+        dots.forEach(dot => {
             dot.addEventListener('click', function(e) {
                 let idx = parseInt(this.getAttribute('data-index'));
                 if (!isNaN(idx)) goToSlide(idx);
-                resetCarouselTimer();
+                resetTimer();
             });
         });
         
-        // 启动自动轮播
-        startCarouselTimer();
+        startTimer();
     }
     
     function goToSlide(index) {
+        if (!carouselImgs.length) return;
         if (index < 0) index = 0;
         if (index >= carouselImgs.length) index = 0;
         
@@ -502,7 +502,7 @@
             img.classList.toggle('active', i === index);
         });
         
-        const dots = document.querySelectorAll('#carouselDots span');
+        let dots = document.querySelectorAll('#carouselDots span');
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === index);
         });
@@ -516,56 +516,69 @@
         goToSlide(next);
     }
     
-    function startCarouselTimer() {
+    function startTimer() {
         if (carouselTimer) clearInterval(carouselTimer);
         carouselTimer = setInterval(nextSlide, 4000);
     }
     
-    function resetCarouselTimer() {
+    function resetTimer() {
         if (carouselTimer) clearInterval(carouselTimer);
-        startCarouselTimer();
+        startTimer();
     }
     
-    function stopCarouselTimer() {
+    function stopTimer() {
         if (carouselTimer) {
             clearInterval(carouselTimer);
             carouselTimer = null;
         }
     }
 
-    // 页面切换
+    // ========== 页面切换 ==========
     function showPage() {
         let hash = location.hash || '#homeView';
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
         
-        if(hash === '#aboutView') {
-            document.getElementById('aboutView').style.display = 'block';
-            stopCarouselTimer();
-        } else if(hash === '#noticeView') {
-            document.getElementById('noticeView').style.display = 'block';
+        let pages = document.querySelectorAll('.page');
+        pages.forEach(p => p.style.display = 'none');
+        
+        let homePage = document.getElementById('homeView');
+        let aboutPage = document.getElementById('aboutView');
+        let noticePage = document.getElementById('noticeView');
+        let contactPage = document.getElementById('contactView');
+        
+        if (hash === '#aboutView' && aboutPage) {
+            aboutPage.style.display = 'block';
+            stopTimer();
+        } else if (hash === '#noticeView' && noticePage) {
+            noticePage.style.display = 'block';
             renderFullNotices();
-            stopCarouselTimer();
-        } else if(hash === '#contactView') {
-            document.getElementById('contactView').style.display = 'block';
-            stopCarouselTimer();
+            stopTimer();
+        } else if (hash === '#contactView' && contactPage) {
+            contactPage.style.display = 'block';
+            stopTimer();
         } else {
-            document.getElementById('homeView').style.display = 'block';
+            if (homePage) homePage.style.display = 'block';
+            location.hash = '#homeView';
             renderLatest();
-            startCarouselTimer();
+            startTimer();
         }
         
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('href') === hash);
+        let btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(btn => {
+            if (btn.getAttribute('href') === hash) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
         });
     }
 
     // 初始化
-    window.addEventListener('load', () => {
+    window.addEventListener('load', function() {
         initCarousel();
         showPage();
     });
     
-    window.addEventListener('hashchange', () => {
+    window.addEventListener('hashchange', function() {
         showPage();
     });
 </script>
