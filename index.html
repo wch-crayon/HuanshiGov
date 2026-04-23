@@ -99,7 +99,6 @@
             min-height: 500px;
         }
 
-        /* 首页布局 */
         .home-grid {
             display: flex;
             gap: 24px;
@@ -111,7 +110,7 @@
             flex: 2;
             min-width: 260px;
             height: 320px;
-            background: #ddd;
+            background: #2c3e2c;
             border-radius: 24px;
             overflow: hidden;
             position: relative;
@@ -121,11 +120,15 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .carousel-box img.active {
-            display: block;
+            opacity: 1;
         }
 
         .carousel-btn {
@@ -226,7 +229,6 @@
             border-radius: 60px;
         }
 
-        /* 其他页面样式 */
         .intro-card, .contact-card {
             background: rgba(255, 255, 255, 0.85);
             border-radius: 32px;
@@ -372,63 +374,69 @@
 </div>
 
 <script>
-    // 公告数据
+    // 公告数据（严格按照您的格式）
     const notices = [
         { 
-		title: "关于广泉方面盗窃幻市方面财产", 
-		author: "wch蜡笔", date: "2026-4-23 19:32:38",
-		content: "<p>由于近期广泉方面盗窃幻市在广泉建设的幻市大厦，现特发公告对广泉方面予以强烈的谴责</p>			<p>幻市市政厅</p>
-				<p>2026年4月23日</p>" 
-	},
+            title: "关于广泉方面盗窃幻市方面财产", 
+            author: "wch蜡笔", date: "2026-4-23 19:32:38",
+            content: "<p>由于近期广泉方面盗窃幻市在广泉建设的幻市大厦，现特发公告对广泉方面予以强烈的谴责</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月23日</p>" 
+        },
         {
-		title: "关于对幻市成员进行管控的通知",
-		author: "wch蜡笔", date: "2026-4-23 19:32:26",
-		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，幻市方面将颁发最新条令，在未经允许的情况下，严禁任何幻市成员与任何广泉成员或与广泉成员存在任何形式上存在任何交往的任何人或单位存在任何形式上存在任何交往，违者视为自动退出幻市</p>
-				<p>幻市市政厅</p><p>2026年4月23日</p>" },
+            title: "关于对幻市成员进行管控的通知",
+            author: "wch蜡笔", date: "2026-4-23 19:32:26",
+            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，幻市方面将颁发最新条令，在未经允许的情况下，严禁任何幻市成员与任何广泉成员或与广泉成员存在任何形式上存在任何交往的任何人或单位存在任何形式上存在任何交往，违者视为自动退出幻市</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月23日</p>" 
+        },
         {
-		 title: "关于幻市黑名单更新", author: "wch蜡笔",
-		date: "2026-4-23 19:32:17",
-		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现将黑名单增加至广泉所有成员及与广泉市存在任何形式的任何合作的任何人或单位</p>
-				<p>幻市市政厅</p>
-				<p>2026年4月23日</p>"
-	},
+            title: "关于幻市黑名单更新", 
+            author: "wch蜡笔",
+            date: "2026-4-23 19:32:17",
+            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现将黑名单增加至广泉所有成员及与广泉市存在任何形式的任何合作的任何人或单位</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月23日</p>"
+        },
         {
-		title: "关于与广泉方面的合作终止",
-		author: "wch蜡笔", date: "2026-4-23 19:32:08",
-		content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现终止与广泉方面任何形式的任何合作，包括但不限于：幻林高速铁路广泉段，幻林高速公路广泉段，幻广德铁路</p>
-				<p>幻市市政厅</p>
-				<p>2026年4月23日</p>" },
+            title: "关于与广泉方面的合作终止",
+            author: "wch蜡笔", date: "2026-4-23 19:32:08",
+            content: "<p>由于近期广泉方面对幻市进行言语挑衅，并且进行恶意抹黑及挑拨离间行为，现终止与广泉方面任何形式的任何合作，包括但不限于：幻林高速铁路广泉段，幻林高速公路广泉段，幻广德铁路</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月23日</p>" 
+        },
         {
-		title: "幻林高速公路正式立项",
-		author: "苹果城市管理",
-		date: "2026-4-22 20:06:53",
-		content: "<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p>
-				<p>幻市市政厅</p>
-				<p>2026年4月22日</p>"
-	},
+            title: "幻林高速公路正式立项",
+            author: "苹果城市管理",
+            date: "2026-4-22 20:06:53",
+            content: "<p>今日，幻林高速公路正式立项，预计于2026年8月开工，开通后即可连通多地居民的交通。</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月22日</p>"
+        },
         {
-		title: "幻市市政厅网站正式启用",
-		author: "wch蜡笔", date: "2026-4-22 17:50:00",
-		content: "<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p>
-				<p>网址：https://wch-crayon.github.io/HuanshiGov/</p>
-				<p>幻市市政厅</p>
-				<p>2026年4月22日</p>" },
+            title: "幻市市政厅网站正式启用",
+            author: "wch蜡笔", date: "2026-4-22 17:50:00",
+            content: "<p>今日起，幻市市政厅网站正式启用，市民们可以更加方便地联系我们了！</p>
+                    <p>网址：https://wch-crayon.github.io/HuanshiGov/</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月22日</p>" 
+        },
         {
-		title: "幻市市政厅网页正式启用",
-		author: "wch蜡笔",
-		date: "2026-4-21 22:25:00",
-		content: "<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p>
-				<p>幻市市政厅</p>
-				<p>2026年4月21日</p>" }
+            title: "幻市市政厅网页正式启用",
+            author: "wch蜡笔",
+            date: "2026-4-21 22:25:00",
+            content: "<p>今日起，幻市市政厅网页正式启用，市民们可以更加方便地联系我们了！</p>
+                    <p>幻市市政厅</p>
+                    <p>2026年4月21日</p>" 
+        }
     ];
 
-    // 工具函数
     function escapeHtml(str) {
         if(!str) return '';
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
     }
 
-    // 渲染最新4条（右侧）
+    // 渲染最新4条
     function renderLatest() {
         let latest = [...notices].reverse().slice(0,4);
         let html = '';
@@ -444,7 +452,7 @@
     // 渲染完整公告页
     function renderFullNotices() {
         let html = '';
-        notices.slice().reverse().forEach(n => {
+        [...notices].reverse().forEach(n => {
             html += `<div class="notice-card">
                         <div class="notice-header">
                             <div class="notice-title">📢 ${escapeHtml(n.title)}</div>
@@ -456,41 +464,110 @@
         document.getElementById('fullNoticeList').innerHTML = html;
     }
 
-    // 轮播逻辑
-    let slideIndex = 0;
-    let timer;
-    const imgs = document.querySelectorAll('#carousel img');
-    function showSlide(n) {
-        imgs.forEach((img,i) => img.classList.toggle('active', i === n));
-        document.querySelectorAll('#carouselDots span').forEach((dot,i) => dot.classList.toggle('active', i === n));
-        slideIndex = n;
-    }
-    function nextSlide() { showSlide((slideIndex + 1) % imgs.length); }
-    function buildDots() {
+    // ========== 轮播图逻辑（重写，保证稳定） ==========
+    let currentIndex = 0;
+    let carouselTimer = null;
+    const carouselBox = document.getElementById('carousel');
+    const carouselImgs = carouselBox ? carouselBox.querySelectorAll('img') : [];
+    const dotsContainer = document.getElementById('carouselDots');
+
+    function initCarousel() {
+        if (!carouselImgs.length) return;
+        
+        // 生成dots
         let dotsHtml = '';
-        imgs.forEach((_,i) => dotsHtml += `<span class="${i===0?'active':''}" data-index="${i}"></span>`);
-        document.getElementById('carouselDots').innerHTML = dotsHtml;
+        for (let i = 0; i < carouselImgs.length; i++) {
+            dotsHtml += `<span class="${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
+        }
+        if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
+        
+        // 绑定点击事件
         document.querySelectorAll('#carouselDots span').forEach(dot => {
-            dot.addEventListener('click', (e) => { showSlide(parseInt(e.target.dataset.index)); resetTimer(); });
+            dot.addEventListener('click', function(e) {
+                let idx = parseInt(this.getAttribute('data-index'));
+                if (!isNaN(idx)) goToSlide(idx);
+                resetCarouselTimer();
+            });
         });
+        
+        // 启动自动轮播
+        startCarouselTimer();
     }
-    function resetTimer() { if(timer) clearInterval(timer); timer = setInterval(nextSlide, 4000); }
+    
+    function goToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= carouselImgs.length) index = 0;
+        
+        carouselImgs.forEach((img, i) => {
+            img.classList.toggle('active', i === index);
+        });
+        
+        const dots = document.querySelectorAll('#carouselDots span');
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+        
+        currentIndex = index;
+    }
+    
+    function nextSlide() {
+        let next = currentIndex + 1;
+        if (next >= carouselImgs.length) next = 0;
+        goToSlide(next);
+    }
+    
+    function startCarouselTimer() {
+        if (carouselTimer) clearInterval(carouselTimer);
+        carouselTimer = setInterval(nextSlide, 4000);
+    }
+    
+    function resetCarouselTimer() {
+        if (carouselTimer) clearInterval(carouselTimer);
+        startCarouselTimer();
+    }
+    
+    function stopCarouselTimer() {
+        if (carouselTimer) {
+            clearInterval(carouselTimer);
+            carouselTimer = null;
+        }
+    }
 
     // 页面切换
     function showPage() {
         let hash = location.hash || '#homeView';
         document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        if(hash === '#aboutView') document.getElementById('aboutView').style.display = 'block';
-        else if(hash === '#noticeView') { document.getElementById('noticeView').style.display = 'block'; renderFullNotices(); }
-        else if(hash === '#contactView') document.getElementById('contactView').style.display = 'block';
-        else { document.getElementById('homeView').style.display = 'block'; renderLatest(); if(timer) resetTimer(); }
+        
+        if(hash === '#aboutView') {
+            document.getElementById('aboutView').style.display = 'block';
+            stopCarouselTimer();
+        } else if(hash === '#noticeView') {
+            document.getElementById('noticeView').style.display = 'block';
+            renderFullNotices();
+            stopCarouselTimer();
+        } else if(hash === '#contactView') {
+            document.getElementById('contactView').style.display = 'block';
+            stopCarouselTimer();
+        } else {
+            document.getElementById('homeView').style.display = 'block';
+            renderLatest();
+            startCarouselTimer();
+        }
+        
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('href') === hash);
         });
     }
 
-    window.addEventListener('load', () => { buildDots(); showPage(); resetTimer(); });
-    window.addEventListener('hashchange', () => { showPage(); if(location.hash === '#homeView') resetTimer(); else if(timer) clearInterval(timer); });
+    // 初始化
+    window.addEventListener('load', () => {
+        initCarousel();
+        showPage();
+    });
+    
+    window.addEventListener('hashchange', () => {
+        showPage();
+    });
 </script>
 </body>
 </html>
