@@ -101,7 +101,7 @@
             min-height: 500px;
         }
 
-        /* ========== 新增：首页双栏布局 ========== */
+        /* ========== 新增样式（只加不删） ========== */
         .home-grid {
             display: flex;
             gap: 24px;
@@ -206,20 +206,37 @@
             margin-top: 4px;
         }
 
-        /* 原首页卡片保留，但去掉大标题，只留服务语 */
+        @media (max-width: 700px) {
+            .home-grid {
+                flex-direction: column;
+            }
+            .carousel-box, .notice-side {
+                height: auto;
+                min-height: 280px;
+            }
+        }
+        /* ========== 新增样式结束 ========== */
+
         .welcome-card {
             text-align: center;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(4px);
             border-radius: 48px;
-            padding: 2rem;
+            padding: 3rem 2rem;
             border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+
+        .slogan {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #b03a2e;
+            margin-bottom: 20px;
         }
 
         .service-text {
             font-size: 1.2rem;
             color: #c76e3d;
-            margin-top: 0;
+            margin-top: 25px;
             border-top: 2px dashed #f9e0a0;
             display: inline-block;
             padding-top: 18px;
@@ -372,19 +389,12 @@
             display: none;
         }
 
-        @media (max-width: 700px) {
-            .home-grid {
-                flex-direction: column;
-            }
-            .carousel-box, .notice-side {
-                height: auto;
-                min-height: 280px;
-            }
-        }
-
         @media (max-width: 650px) {
             .nav-bar {
                 text-align: center;
+            }
+            .slogan {
+                font-size: 1.7rem;
             }
             .content-pane {
                 padding: 1.5rem;
@@ -424,24 +434,24 @@
     </div>
 
     <div class="content-pane">
-        <!-- 首页（已改造：轮播+最新公告，去掉大标题） -->
+        <!-- 首页（已改造） -->
         <div id="homeView" class="page" style="display: block;">
+            <!-- 新增：轮播+最新公告 -->
             <div class="home-grid">
-                <!-- 轮播图 -->
                 <div class="carousel-box" id="carousel">
                     <img src="https://picsum.photos/id/104/600/400" alt="幻市风景" class="active">
                     <img src="https://picsum.photos/id/15/600/400" alt="幻林高速">
                     <img src="https://picsum.photos/id/96/600/400" alt="市政厅">
                     <div class="carousel-btn" id="carouselDots"></div>
                 </div>
-                <!-- 右侧最新公告 -->
                 <div class="notice-side">
                     <h3>📢 最新公告</h3>
                     <ul class="notice-compact-list" id="latestList"></ul>
                 </div>
             </div>
-            <!-- 保留原服务语卡片（去掉大标题） -->
+            <!-- 原卡片保留 -->
             <div class="welcome-card">
+                <div class="slogan">✨ 幻市市政厅 ✨</div>
                 <div class="service-text">为民服务 · 共建美好幻市</div>
                 <div style="margin-top: 30px;">
                     <span class="credit-footer">🏛️ 幻市市政厅 | 服务市民 · 用心用情</span>
@@ -449,7 +459,7 @@
             </div>
         </div>
 
-        <!-- 市政介绍（完全没动） -->
+        <!-- 市政介绍 -->
         <div id="aboutView" class="page">
             <div class="intro-card">
                 <div class="intro-title">🏛️ 幻市市政厅简介</div>
@@ -473,12 +483,12 @@
             </div>
         </div>
 
-        <!-- 市政公告（完全没动） -->
+        <!-- 市政公告 -->
         <div id="noticeView" class="page">
             <div class="notice-list" id="noticeList"></div>
         </div>
 
-        <!-- 联系我们（完全没动） -->
+        <!-- 联系我们 -->
         <div id="contactView" class="page">
             <div class="contact-card">
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">📞 联系我们</div>
@@ -496,7 +506,7 @@
 </div>
 
 <script>
-    // ==================== 公告数据（在这里编辑，完全按您的格式） ====================
+    // ==================== 公告数据（在这里编辑） ====================
     const notices = [
         { 
 		title: "关于广泉方面盗窃幻市方面财产", 
@@ -566,7 +576,7 @@
         container.innerHTML = html;
     }
 
-    // 渲染右侧最新4条公告
+    // 新增：渲染右侧最新4条公告
     function renderLatest() {
         const container = document.getElementById('latestList');
         if (!container) return;
@@ -634,6 +644,8 @@
         const carouselBox = document.getElementById('carousel');
         if (!carouselBox) return;
         carouselImgs = Array.from(carouselBox.querySelectorAll('img'));
+        if (carouselImgs.length === 0) return;
+        
         const dotsContainer = document.getElementById('carouselDots');
         if (!dotsContainer) return;
         
