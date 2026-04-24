@@ -954,4 +954,93 @@
             html += `
                 <div class="mini-notice-item" data-index="${i}">
                     <span class="mini-notice-title">${escapeHtml(n.title)}</span>
-                    <span class="mini-notice-meta">${escapeHtml(n.author)} · ${escapeHtml(n
+                    <span class="mini-notice-meta">${escapeHtml(n.author)} · ${escapeHtml(n.date)}</span>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+        
+        const items = document.querySelectorAll('.mini-notice-item');
+        items.forEach((item, idx) => {
+            item.addEventListener('click', () => {
+                window.location.hash = '#noticeView';
+                setTimeout(() => {
+                    const noticeCards = document.querySelectorAll('#noticeList .notice-card');
+                    if (noticeCards[idx]) {
+                        noticeCards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 200);
+            });
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function setActiveButton() {
+        let hash = window.location.hash || '#homeView';
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            if (btn.getAttribute('href') === hash) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    function showPage() {
+        let hash = window.location.hash;
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+        if (hash === '#aboutView') {
+            document.getElementById('aboutView').style.display = 'block';
+        } else if (hash === '#noticeView') {
+            document.getElementById('noticeView').style.display = 'block';
+            renderNotices();
+        } else if (hash === '#membersView') {
+            document.getElementById('membersView').style.display = 'block';
+            renderMembers();   // 每次显示成员列表时渲染
+        } else if (hash === '#contactView') {
+            document.getElementById('contactView').style.display = 'block';
+        } else {
+            document.getElementById('homeView').style.display = 'block';
+            if (!window.location.hash || window.location.hash === '#homeView') {
+                // keep
+            } else {
+                window.location.hash = '#homeView';
+            }
+        }
+        setActiveButton();
+    }
+
+    window.addEventListener('load', function() {
+        initCarousel();
+        renderMiniNotices();
+        showPage();
+        const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
+        if (gotoNoticeBtn) {
+            gotoNoticeBtn.addEventListener('click', function() {
+                window.location.hash = '#noticeView';
+                renderNotices();
+            });
+        }
+    });
+    window.addEventListener('hashchange', function() {
+        showPage();
+        if (window.location.hash === '#noticeView') {
+            renderNotices();
+        }
+        if (window.location.hash === '#membersView') {
+            renderMembers();
+        }
+        setTimeout(renderMiniNotices, 100);
+    });
+</script>
+</body>
+</html>
