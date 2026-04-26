@@ -476,7 +476,7 @@
             box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.15);
         }
 
-        /* 头像区域：左侧顶格圆形 */
+        /* 头像区域：左侧圆形框，使用flex居中内容 */
         .member-avatar {
             flex-shrink: 0;
             width: 64px;
@@ -489,16 +489,33 @@
             overflow: hidden;
             border: 2px solid #f39c12;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            /* 修复头像偏移：确保内部图片和占位符都完全居中 */
+            position: relative;
         }
 
         .member-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* 确保图片完全填充圆形区域且不偏离 */
+            display: block;
+            margin: 0;
+            padding: 0;
         }
 
         .member-avatar .avatar-placeholder {
-            font-size: 2.2rem;
+            font-size: 2rem;
+            font-weight: 500;
+            color: #8b2c1d;
+            background: #f0e0d0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 彻底解决占位符文字偏移问题 */
+            text-align: center;
+            line-height: 1;
         }
 
         /* 成员信息区域，占满剩余宽度 */
@@ -786,7 +803,7 @@
             role: "市长",        // 市长 -> 红色标签
             permission: "操作员", // 操作员 -> 黄色
             bio: "幻市创始者，统筹全市发展与对外事务。",
-            avatar: "wch蜡笔-头像.png"           // 留空使用首字母占位，可后续加图片链接
+            avatar: "wch蜡笔-头像.png"           
         },
         {
             name: "苹果城市管理",
@@ -888,22 +905,23 @@
         return "perm-guest";
     }
 
-    // 渲染成员列表
+    // 渲染成员列表（重点修复头像偏移问题：图片和占位符都完美居中）
     function renderMembers() {
         const container = document.getElementById('memberListContainer');
         if (!container) return;
         let html = '';
         for(let m of members) {
-            // 头像处理：有图展示图片，否则显示文字占位符
-            const avatarHtml = m.avatar && m.avatar.trim() !== "" 
-                ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" onerror="this.src='';this.nextElementSibling.style.display='flex';this.style.display='none'">`
-                : '';
-            const placeholderStyle = (m.avatar && m.avatar.trim() !== "") ? 'display: none;' : '';
+            // 处理头像显示：如果头像URL有效则显示图片，否则显示首字母占位符
+            const hasAvatar = m.avatar && m.avatar.trim() !== "";
+            // 注意：为了解决图片加载失败导致偏移，同样使用onerror回退到占位符，且占位符会居中
+            const avatarImgHtml = hasAvatar ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : '';
+            // 占位符样式：默认如果存在有效图片地址则先隐藏，等图片加载失败或地址无效时显示
+            const placeholderDisplayStyle = hasAvatar ? 'display: none;' : 'display: flex;';
             html += `
                 <div class="member-card">
                     <div class="member-avatar">
-                        ${avatarHtml}
-                        <div class="avatar-placeholder" style="${placeholderStyle} align-items:center;justify-content:center;width:100%;height:100%;display:flex;">${escapeHtml(m.name.charAt(0))}</div>
+                        ${avatarImgHtml}
+                        <div class="avatar-placeholder" style="${placeholderDisplayStyle} align-items:center; justify-content:center; width:100%; height:100%;">${escapeHtml(m.name.charAt(0))}</div>
                     </div>
                     <div class="member-info">
                         <div class="member-name-row">
@@ -931,172 +949,4 @@
             slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
         }
         const dots = document.querySelectorAll('.dot');
-        dots.forEach((dot, idx) => {
-            if (idx === currentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-    }
-
-    function nextSlide() {
-        if (slides.length === 0) return;
-        currentIndex = (currentIndex + 1) % slides.length;
-        updateCarousel();
-        resetAutoTimer();
-    }
-
-    function prevSlide() {
-        if (slides.length === 0) return;
-        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-        updateCarousel();
-        resetAutoTimer();
-    }
-
-    function resetAutoTimer() {
-        if (autoTimer) clearInterval(autoTimer);
-        autoTimer = setInterval(nextSlide, 5000);
-    }
-
-    function initCarousel() {
-        if (slides.length === 0) return;
-        for (let i = 0; i < slides.length; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if (i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => {
-                currentIndex = i;
-                updateCarousel();
-                resetAutoTimer();
-            });
-            dotsContainer.appendChild(dot);
-        }
-        updateCarousel();
-        resetAutoTimer();
-
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    }
-
-    function renderNotices() {
-        const container = document.getElementById('noticeList');
-        if (!container) return;
-        let html = '';
-        for (let n of notices) {
-            html += '<div class="notice-card">' +
-                '<div class="notice-header">' +
-                    '<div class="notice-title">' + escapeHtml(n.title) + '</div>' +
-                    '<div class="notice-meta">' +
-                        '<span class="notice-author">' + escapeHtml(n.author) + '</span>' +
-                        '<span class="notice-date">' + escapeHtml(n.date) + '</span>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="notice-content">' + n.content + '</div>' +
-            '</div>';
-        }
-        container.innerHTML = html;
-    }
-
-    function renderMiniNotices() {
-        const container = document.getElementById('miniNoticeList');
-        if (!container) return;
-        const latest4 = notices.slice(0, 4);
-        let html = '';
-        for (let i = 0; i < latest4.length; i++) {
-            const n = latest4[i];
-            html += `
-                <div class="mini-notice-item" data-index="${i}">
-                    <span class="mini-notice-title">${escapeHtml(n.title)}</span>
-                    <span class="mini-notice-meta">${escapeHtml(n.author)} · ${escapeHtml(n.date)}</span>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-        
-        const items = document.querySelectorAll('.mini-notice-item');
-        items.forEach((item, idx) => {
-            item.addEventListener('click', () => {
-                window.location.hash = '#noticeView';
-                setTimeout(() => {
-                    const noticeCards = document.querySelectorAll('#noticeList .notice-card');
-                    if (noticeCards[idx]) {
-                        noticeCards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 200);
-            });
-        });
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function setActiveButton() {
-        let hash = window.location.hash || '#homeView';
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if (btn.getAttribute('href') === hash) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
-
-    function showPage() {
-        let hash = window.location.hash;
-        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-        if (hash === '#aboutView') {
-            document.getElementById('aboutView').style.display = 'block';
-        } else if (hash === '#noticeView') {
-            document.getElementById('noticeView').style.display = 'block';
-            renderNotices();
-        } else if (hash === '#membersView') {
-            document.getElementById('membersView').style.display = 'block';
-            renderMembers();   // 每次显示成员列表时渲染
-        } else if (hash === '#contactView') {
-            document.getElementById('contactView').style.display = 'block';
-        } else {
-            document.getElementById('homeView').style.display = 'block';
-            if (!window.location.hash || window.location.hash === '#homeView') {
-                // keep
-            } else {
-                window.location.hash = '#homeView';
-            }
-        }
-        setActiveButton();
-    }
-
-    window.addEventListener('load', function() {
-        initCarousel();
-        renderMiniNotices();
-        showPage();
-        const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
-        if (gotoNoticeBtn) {
-            gotoNoticeBtn.addEventListener('click', function() {
-                window.location.hash = '#noticeView';
-                renderNotices();
-            });
-        }
-    });
-    window.addEventListener('hashchange', function() {
-        showPage();
-        if (window.location.hash === '#noticeView') {
-            renderNotices();
-        }
-        if (window.location.hash === '#membersView') {
-            renderMembers();
-        }
-        setTimeout(renderMiniNotices, 100);
-    });
-</script>
-</body>
-</html>
+        dots.forEach((
