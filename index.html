@@ -949,4 +949,172 @@
             slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
         }
         const dots = document.querySelectorAll('.dot');
-        dots.forEach((
+        dots.forEach((dot, idx) => {
+            if (idx === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        if (slides.length === 0) return;
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarousel();
+        resetAutoTimer();
+    }
+
+    function prevSlide() {
+        if (slides.length === 0) return;
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateCarousel();
+        resetAutoTimer();
+    }
+
+    function resetAutoTimer() {
+        if (autoTimer) clearInterval(autoTimer);
+        autoTimer = setInterval(nextSlide, 5000);
+    }
+
+    function initCarousel() {
+        if (slides.length === 0) return;
+        for (let i = 0; i < slides.length; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                currentIndex = i;
+                updateCarousel();
+                resetAutoTimer();
+            });
+            dotsContainer.appendChild(dot);
+        }
+        updateCarousel();
+        resetAutoTimer();
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    }
+
+    function renderNotices() {
+        const container = document.getElementById('noticeList');
+        if (!container) return;
+        let html = '';
+        for (let n of notices) {
+            html += '<div class="notice-card">' +
+                '<div class="notice-header">' +
+                    '<div class="notice-title">' + escapeHtml(n.title) + '</div>' +
+                    '<div class="notice-meta">' +
+                        '<span class="notice-author">' + escapeHtml(n.author) + '</span>' +
+                        '<span class="notice-date">' + escapeHtml(n.date) + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="notice-content">' + n.content + '</div>' +
+            '</div>';
+        }
+        container.innerHTML = html;
+    }
+
+    function renderMiniNotices() {
+        const container = document.getElementById('miniNoticeList');
+        if (!container) return;
+        const latest4 = notices.slice(0, 4);
+        let html = '';
+        for (let i = 0; i < latest4.length; i++) {
+            const n = latest4[i];
+            html += `
+                <div class="mini-notice-item" data-index="${i}">
+                    <span class="mini-notice-title">${escapeHtml(n.title)}</span>
+                    <span class="mini-notice-meta">${escapeHtml(n.author)} · ${escapeHtml(n.date)}</span>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+        
+        const items = document.querySelectorAll('.mini-notice-item');
+        items.forEach((item, idx) => {
+            item.addEventListener('click', () => {
+                window.location.hash = '#noticeView';
+                setTimeout(() => {
+                    const noticeCards = document.querySelectorAll('#noticeList .notice-card');
+                    if (noticeCards[idx]) {
+                        noticeCards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 200);
+            });
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function setActiveButton() {
+        let hash = window.location.hash || '#homeView';
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            if (btn.getAttribute('href') === hash) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    function showPage() {
+        let hash = window.location.hash;
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+        if (hash === '#aboutView') {
+            document.getElementById('aboutView').style.display = 'block';
+        } else if (hash === '#noticeView') {
+            document.getElementById('noticeView').style.display = 'block';
+            renderNotices();
+        } else if (hash === '#membersView') {
+            document.getElementById('membersView').style.display = 'block';
+            renderMembers();   // 每次显示成员列表时渲染，确保头像完美居中
+        } else if (hash === '#contactView') {
+            document.getElementById('contactView').style.display = 'block';
+        } else {
+            document.getElementById('homeView').style.display = 'block';
+            if (!window.location.hash || window.location.hash === '#homeView') {
+                // keep
+            } else {
+                window.location.hash = '#homeView';
+            }
+        }
+        setActiveButton();
+    }
+
+    window.addEventListener('load', function() {
+        initCarousel();
+        renderMiniNotices();
+        showPage();
+        const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
+        if (gotoNoticeBtn) {
+            gotoNoticeBtn.addEventListener('click', function() {
+                window.location.hash = '#noticeView';
+                renderNotices();
+            });
+        }
+    });
+    window.addEventListener('hashchange', function() {
+        showPage();
+        if (window.location.hash === '#noticeView') {
+            renderNotices();
+        }
+        if (window.location.hash === '#membersView') {
+            renderMembers();
+        }
+        setTimeout(renderMiniNotices, 100);
+    });
+</script>
+</body>
+</html>
