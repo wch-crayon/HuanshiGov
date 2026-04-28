@@ -577,6 +577,50 @@
             margin-top: 4px;
         }
 
+        /* ========= 意见反馈页面专用样式：巨大的长方形按钮 ========= */
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 2px solid #f39c12;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .feedback-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .feedback-giant-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #8b2c1d;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+        .feedback-sub {
+            font-size: 1.2rem;
+            color: #c76e3d;
+            border-top: 2px dashed #f9e0a0;
+            display: inline-block;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 650px) {
+            .feedback-giant-text {
+                font-size: 1.4rem;
+            }
+            .feedback-sub {
+                font-size: 1rem;
+            }
+            .feedback-card {
+                padding: 2rem 1rem;
+            }
+        }
+
         @media (max-width: 650px) {
             .member-card {
                 flex-direction: column;
@@ -642,7 +686,7 @@
         </div>
     </div>
 
-    <!-- 白色导航栏（独立一行）包含成员列表按钮 -->
+    <!-- 白色导航栏（独立一行）：在“联系我们”右侧增加“意见反馈”按钮 -->
     <div class="nav-bar">
         <div class="nav-buttons">
             <a href="#homeView" class="nav-btn active">🏠 首页</a>
@@ -650,6 +694,8 @@
             <a href="#noticeView" class="nav-btn">📢 市政公告</a>
             <a href="#membersView" class="nav-btn">👥 成员列表</a>
             <a href="#contactView" class="nav-btn">📞 联系我们</a>
+            <!-- 新增：意见反馈按钮，点击后跳转到反馈页面（本地视图） -->
+            <a href="#feedbackView" class="nav-btn">💬 意见反馈</a>
         </div>
     </div>
 
@@ -749,6 +795,15 @@
                 <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #f9e0a0;">
                     <span class="credit-footer">🏛️ 幻市市政厅 · 为民服务</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- 新增：意见反馈页面 (巨大的长方形跳转按钮) -->
+        <div id="feedbackView" class="page">
+            <div class="feedback-card" id="feedbackJumpBtn">
+                <div class="feedback-giant-text">📝 点击本按钮跳转至意见反馈网页</div>
+                <div class="feedback-sub">我们将认真听取每一位市民的建议</div>
+                <div style="margin-top: 16px; font-size: 0.9rem; color: #b03a2e;">👉 立即反馈 👈</div>
             </div>
         </div>
     </div>
@@ -912,17 +967,14 @@
         return "perm-guest";
     }
 
-    // 渲染成员列表（重点修复头像偏移问题：图片和占位符都完美居中）
+    // 渲染成员列表
     function renderMembers() {
         const container = document.getElementById('memberListContainer');
         if (!container) return;
         let html = '';
         for(let m of members) {
-            // 处理头像显示：如果头像URL有效则显示图片，否则显示首字母占位符
             const hasAvatar = m.avatar && m.avatar.trim() !== "";
-            // 注意：为了解决图片加载失败导致偏移，同样使用onerror回退到占位符，且占位符会居中
             const avatarImgHtml = hasAvatar ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : '';
-            // 占位符样式：默认如果存在有效图片地址则先隐藏，等图片加载失败或地址无效时显示
             const placeholderDisplayStyle = hasAvatar ? 'display: none;' : 'display: flex;';
             html += `
                 <div class="member-card">
@@ -944,7 +996,7 @@
         container.innerHTML = html;
     }
 
-    // ==================== 原有轮播图及公告函数 ====================
+    // ==================== 轮播图及公告函数 ====================
     let currentIndex = 0;
     const slides = document.querySelectorAll('.carousel-slide');
     const slidesContainer = document.getElementById('carouselSlides');
@@ -1086,9 +1138,11 @@
             renderNotices();
         } else if (hash === '#membersView') {
             document.getElementById('membersView').style.display = 'block';
-            renderMembers();   // 每次显示成员列表时渲染，确保头像完美居中
+            renderMembers();
         } else if (hash === '#contactView') {
             document.getElementById('contactView').style.display = 'block';
+        } else if (hash === '#feedbackView') {
+            document.getElementById('feedbackView').style.display = 'block';
         } else {
             document.getElementById('homeView').style.display = 'block';
             if (!window.location.hash || window.location.hash === '#homeView') {
@@ -1100,10 +1154,27 @@
         setActiveButton();
     }
 
+    // 绑定意见反馈跳转逻辑 (跳转到指定外部网页)
+    function bindFeedbackJump() {
+        const feedbackCard = document.getElementById('feedbackJumpBtn');
+        if (feedbackCard) {
+            // 您指定的跳转网页 (可根据需要修改URL)
+            const FEEDBACK_URL = "https://uxlbc8.fanqier.cn/f/379aauto/或在下方替换为您指定的意见反馈网页地址";
+            // 注意：这里为了演示示例，保留可编辑性；实际使用时请替换成真实反馈链接。
+            // 由于您要求“跳转到我指定的网页”，这里提供一个示例反馈地址占位，您可以修改下方链接。
+            // 根据需求：请将下方 https://wch-crayon.github.io/feedback 改为您希望的网址。
+            const TARGET_URL = "https://uxlbc8.fanqier.cn/f/379aauto";  // ← 请替换为您指定的意见反馈网页链接
+            feedbackCard.addEventListener('click', () => {
+                window.open(TARGET_URL, '_blank');  // 新标签页打开
+            });
+        }
+    }
+
     window.addEventListener('load', function() {
         initCarousel();
         renderMiniNotices();
         showPage();
+        bindFeedbackJump();  // 绑定意见反馈巨大按钮跳转事件
         const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
         if (gotoNoticeBtn) {
             gotoNoticeBtn.addEventListener('click', function() {
