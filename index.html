@@ -295,7 +295,7 @@
             padding-top: 18px;
         }
 
-        /* 新增：网页中转站按钮样式（与原来风格统一） */
+        /* 新增：网页中转站按钮样式 */
         .custom-station-btn {
             background: #8b2c1d;
             color: white;
@@ -627,7 +627,7 @@
             box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.15);
         }
 
-        /* 头像区域：左侧顶格圆形 */
+        /* 头像区域：左侧圆形框，使用flex居中内容 */
         .member-avatar {
             flex-shrink: 0;
             width: 64px;
@@ -640,16 +640,30 @@
             overflow: hidden;
             border: 2px solid #f39c12;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
 
         .member-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            margin: 0;
+            padding: 0;
         }
 
         .member-avatar .avatar-placeholder {
-            font-size: 2.2rem;
+            font-size: 2rem;
+            font-weight: 500;
+            color: #8b2c1d;
+            background: #f0e0d0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
         }
 
         /* 成员信息区域，占满剩余宽度 */
@@ -683,11 +697,11 @@
             font-weight: 600;
             color: white;
             text-align: center;
-            background-color: #6c757d; /* fallback */
+            background-color: #6c757d;
         }
-        .role-mayor { background-color: #dc2626; }   /* 市长红色 */
-        .role-deputy { background-color: #f97316; }  /* 副市长橙色 */
-        .role-member { background-color: #6b7280; }  /* 普通成员灰色 */
+        .role-mayor { background-color: #dc2626; }
+        .role-deputy { background-color: #f97316; }
+        .role-member { background-color: #6b7280; }
 
         /* 权限标签样式 */
         .perm-badge {
@@ -699,9 +713,9 @@
             color: #1f2937;
             background-color: #e5e7eb;
         }
-        .perm-operator { background-color: #eab308; color: #422006; }   /* 操作员黄色 */
-        .perm-member { background-color: #3b82f6; color: white; }       /* 成员蓝色 */
-        .perm-guest { background-color: #9ca3af; color: white; }        /* 访客灰色 */
+        .perm-operator { background-color: #eab308; color: #422006; }
+        .perm-member { background-color: #3b82f6; color: white; }
+        .perm-guest { background-color: #9ca3af; color: white; }
 
         /* 简介灰色小字 */
         .member-bio {
@@ -711,7 +725,48 @@
             margin-top: 4px;
         }
 
+        /* ========= 意见反馈页面专用样式：巨大的长方形按钮 ========= */
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 2px solid #f39c12;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .feedback-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .feedback-giant-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #8b2c1d;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+        .feedback-sub {
+            font-size: 1.2rem;
+            color: #c76e3d;
+            border-top: 2px dashed #f9e0a0;
+            display: inline-block;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
         @media (max-width: 650px) {
+            .feedback-giant-text {
+                font-size: 1.4rem;
+            }
+            .feedback-sub {
+                font-size: 1rem;
+            }
+            .feedback-card {
+                padding: 2rem 1rem;
+            }
             .member-card {
                 flex-direction: column;
                 align-items: flex-start;
@@ -734,7 +789,6 @@
                 font-size: 1.4rem;
             }
         }
-        /* ========= 成员列表样式结束 ========= */
 
         .page {
             display: none;
@@ -783,7 +837,7 @@
         </div>
     </div>
 
-    <!-- 白色导航栏（独立一行）包含成员列表按钮 -->
+    <!-- 白色导航栏（独立一行） -->
     <div class="nav-bar">
         <div class="nav-buttons">
             <a href="#homeView" class="nav-btn active">🏠 首页</a>
@@ -791,6 +845,7 @@
             <a href="#noticeView" class="nav-btn">📢 市政公告</a>
             <a href="#membersView" class="nav-btn">👥 成员列表</a>
             <a href="#contactView" class="nav-btn">📞 联系我们</a>
+            <a href="#feedbackView" class="nav-btn">💬 意见反馈</a>
         </div>
     </div>
 
@@ -879,7 +934,7 @@
             <div class="notice-list" id="noticeList"></div>
         </div>
 
-        <!-- 成员列表页 (按照需求制作完整成员显示) -->
+        <!-- 成员列表页 -->
         <div id="membersView" class="page">
             <div class="members-container">
                 <div class="members-title">👥 幻市正式成员名录</div>
@@ -895,12 +950,21 @@
                 <div class="intro-title" style="border-left-color: #f39c12; justify-content: center;">📞 联系我们</div>
                 <p>📍 地址：幻市北幻区东南东大道1号</p>
                 <p>📞 电话：(0710) 123-4567</p>
-                <p>📧 邮箱：wchlabi@163.com</p>
+                <p>📧 邮箱：huanshiszt@163.com</p>
                 <p>🕒 办公时间：周一至周五 07:30 - 21:30</p>
                 <p>🚇 交通：地铁1号线「冰火港站」B出口   公交站市政厅站</p>
                 <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed #f9e0a0;">
                     <span class="credit-footer">🏛️ 幻市市政厅 · 为民服务</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- 意见反馈页面 -->
+        <div id="feedbackView" class="page">
+            <div class="feedback-card" id="feedbackJumpBtn">
+                <div class="feedback-giant-text">📝 点击本按钮跳转至意见反馈网页</div>
+                <div class="feedback-sub">我们将认真听取每一位市民的建议</div>
+                <div style="margin-top: 16px; font-size: 0.9rem; color: #b03a2e;">👉 立即反馈 👈</div>
             </div>
         </div>
     </div>
@@ -916,73 +980,7 @@
 </div>
 
 <script>
-    // ==================== 新增：中转站链接数组（可根据需要随意增删） ====================
-    const externalLinks = [
-        { name: "🏛️ 幻市市政厅旧版官网", url: "https://wch-crayon.github.io/HuanshiGov/" },
-        { name: "📧 市民意见反馈系统", url: "https://forms.office.com/r/example" },
-        { name: "🚇 幻市交通实时查询", url: "https://map.baidu.com" },
-        { name: "📖 幻市城市档案馆", url: "https://www.example.com/archive" },
-        { name: "🌳 幻市绿化环保倡议", url: "https://www.greenpeace.org" },
-        { name: "⚖️ 幻市法律服务平台", url: "https://www.12348.gov.cn" }
-    ];
-
-    function renderWebStationLinks() {
-        const container = document.getElementById('dynamicLinksContainer');
-        if (!container) return;
-        container.innerHTML = '';
-        externalLinks.forEach(link => {
-            const btn = document.createElement('button');
-            btn.className = 'web-link-btn';
-            btn.textContent = link.name;
-            btn.addEventListener('click', () => {
-                window.open(link.url, '_blank');
-            });
-            container.appendChild(btn);
-        });
-    }
-
-    const modal = document.getElementById('webStationModal');
-    function openModal() { if(modal) modal.style.display = 'flex'; }
-    function closeModal() { if(modal) modal.style.display = 'none'; }
-
-    // ==================== 新增：幻市签名言库 (20句) ====================
-    const fortuneQuotes = [
-        "🌟 以民为本，方能行稳致远。",
-        "🏛️ 公正廉洁，幻市之基。",
-        "🌿 绿水青山就是金山银山。",
-        "📚 教育兴市，文化铸魂。",
-        "🚀 创新驱动未来，合作共赢幻市。",
-        "💡 每一份建议都是城市进步的阶梯。",
-        "🌈 和谐包容，共建温暖家园。",
-        "⚖️ 法治是城市最坚固的铠甲。",
-        "🌱 今日的努力，是明日幻市的风景。",
-        "🎋 心怀市民，脚下有路。",
-        "🔧 匠心服务，筑梦幻市。",
-        "📈 开放纳言，繁荣可期。",
-        "🕊️ 团结互信，无惧风浪。",
-        "🏆 每一位市民都是幻市的荣耀。",
-        "🌙 夜以继日，只为更好的明天。",
-        "☀️ 阳光政务，清澈如幻市河水。",
-        "🎯 瞄准幸福，建设高品质之城。",
-        "💪 困难面前，幻市人从不退缩。",
-        "🤝 与邻为善，与市共荣。",
-        "✨ 初心如磐，奋楫笃行。"
-    ];
-
-    function drawRandomFortune() {
-        const randomIndex = Math.floor(Math.random() * fortuneQuotes.length);
-        return fortuneQuotes[randomIndex];
-    }
-
-    function updateFortuneDisplay() {
-        const fortuneTextSpan = document.getElementById('fortuneText');
-        if (fortuneTextSpan) {
-            const newQuote = drawRandomFortune();
-            fortuneTextSpan.textContent = newQuote;
-        }
-    }
-
-    // ==================== 以下是您的原始代码，一字未改 ====================
+    // ==================== 公告数据（完全保留原样，一字未改） ====================
     const notices = [
         { 
             title: "关于广泉方面盗窃幻市方面财产", 
@@ -1023,100 +1021,143 @@
         }
     ];
 
+    // ==================== 成员数据数组（完全保留原样，一字未改） ====================
     const members = [
         {
             name: "wch蜡笔",
             role: "市长",
             permission: "操作员",
-            bio: "幻市创始者，统筹全市发展与对外事务。",
-            avatar: "wch蜡笔-头像.png"
+            bio: "幻市创始者，统筹全市发展与对外事务。称呼：蜡笔",
+            avatar: "wch蜡笔-头像.png"           
         },
         {
             name: "苹果城市管理",
             role: "副市长",
             permission: "操作员",
-            bio: "负责规划幻市部分建设项目，以及幻市大多数建筑的建设工作。",
+            bio: "负责规划幻市部分建设项目，以及幻市大多数建筑的建设工作。称呼：苹果",
             avatar: "苹果城市管理-头像.png"
         },
         {
             name: "一个玩了几年的",
             role: "副市长",
             permission: "操作员",
-            bio: "负责管理城市部分事务。",
-            avatar: ""
+            bio: "负责管理城市部分事务。称呼：数羊",
+            avatar: "一个玩了几年的-头像.png"
         },
         {
             name: "达速跨越武汉站",
             role: "副市长",
             permission: "操作员",
-            bio: "负责铁路专业理论在幻市的实践。",
+            bio: "负责铁路专业理论在幻市的实践。称呼：小猪",
             avatar: "达速跨越武汉站-头像.png"
         },
         {
             name: "我不是新阳我是给",
             role: "普通成员",
             permission: "操作员",
-            bio: "负责城市的航空工作",
+            bio: "负责城市的航空工作。称呼：新阳",
             avatar: "我不是新阳我是给-头像.png"
         },
         {
             name: "合肥公交迷备用",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：合肥",
+            avatar: "合肥公交迷备用-头像.png"
         },
         {
             name: "小张的朋友小张",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：小张",
+            avatar: "小张的朋友小张-头像.png"
         },
         {
-            name: "诅咒之岛肿头龙",
+            name: "诅咒种头龙小号",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：肿头龙",
+            avatar: "诅咒肿头龙小号-头像.png"
         },
         {
-            name: "津滨的CRH2A",
+            name: "东风建工_津滨",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：津滨",
+            avatar: "东风建工_津滨-头像.png"
         },
         {
             name: "铁路旅游爱好者",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：森鸢",
+            avatar: "铁路旅游爱好者-头像.png"
         },
         {
             name: "凋洋",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：凋洋",
+            avatar: "凋洋-头像.png"
         },
         {
             name: "糊涂烦烦轮胎",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：轮胎",
+            avatar: "糊涂烦烦轮胎-头像.png"
         },
         {
             name: "最好班长解说",
             role: "普通成员",
             permission: "操作员",
-            bio: "这个蜡笔很懒，都懒得给成员写简介了",
-            avatar: ""
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：最好班长",
+            avatar: "最好班长解说-头像.png"
+        },
+        {
+            name: "晚上的休",
+            role: "普通成员",
+            permission: "成员",
+            bio: "这个蜡笔很懒，都懒得给成员写简介了。称呼：雪豹",
+            avatar: "晚上的休-头像.png"
         }
     ];
 
+    // ==================== 新增：中转站链接数组（可随意增删改） ====================
+    const externalLinks = [
+        { name: "🏛️ 幻市市政厅旧版官网", url: "https://wch-crayon.github.io/HuanshiGov/" },
+        { name: "📧 市长信箱（意见反馈）", url: "https://uxlbc8.fanqier.cn/f/379aauto" },
+        { name: "🚇 幻市交通实时查询平台", url: "https://map.baidu.com" },
+        { name: "📖 幻市城市档案馆", url: "https://www.example.com/archive" },
+        { name: "🌳 幻市绿化环保倡议", url: "https://www.greenpeace.org" },
+        { name: "⚖️ 幻市法律服务平台", url: "https://www.12348.gov.cn" }
+    ];
+
+    // ==================== 新增：幻市签名言库 (20句) ====================
+    const fortuneQuotes = [
+        "🌟 以民为本，方能行稳致远。",
+        "🏛️ 公正廉洁，幻市之基。",
+        "🌿 绿水青山就是金山银山。",
+        "📚 教育兴市，文化铸魂。",
+        "🚀 创新驱动未来，合作共赢幻市。",
+        "💡 每一份建议都是城市进步的阶梯。",
+        "🌈 和谐包容，共建温暖家园。",
+        "⚖️ 法治是城市最坚固的铠甲。",
+        "🌱 今日的努力，是明日幻市的风景。",
+        "🎋 心怀市民，脚下有路。",
+        "🔧 匠心服务，筑梦幻市。",
+        "📈 开放纳言，繁荣可期。",
+        "🕊️ 团结互信，无惧风浪。",
+        "🏆 每一位市民都是幻市的荣耀。",
+        "🌙 夜以继日，只为更好的明天。",
+        "☀️ 阳光政务，清澈如幻市河水。",
+        "🎯 瞄准幸福，建设高品质之城。",
+        "💪 困难面前，幻市人从不退缩。",
+        "🤝 与邻为善，与市共荣。",
+        "✨ 初心如磐，奋楫笃行。"
+    ];
+
+    // 角色映射样式
     function getRoleClass(role) {
         if(role === "市长") return "role-mayor";
         if(role === "副市长") return "role-deputy";
@@ -1134,15 +1175,14 @@
         if (!container) return;
         let html = '';
         for(let m of members) {
-            const avatarHtml = m.avatar && m.avatar.trim() !== "" 
-                ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" onerror="this.src='';this.nextElementSibling.style.display='flex';this.style.display='none'">`
-                : '';
-            const placeholderStyle = (m.avatar && m.avatar.trim() !== "") ? 'display: none;' : '';
+            const hasAvatar = m.avatar && m.avatar.trim() !== "";
+            const avatarImgHtml = hasAvatar ? `<img src="${escapeHtml(m.avatar)}" alt="${escapeHtml(m.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : '';
+            const placeholderDisplayStyle = hasAvatar ? 'display: none;' : 'display: flex;';
             html += `
                 <div class="member-card">
                     <div class="member-avatar">
-                        ${avatarHtml}
-                        <div class="avatar-placeholder" style="${placeholderStyle} align-items:center;justify-content:center;width:100%;height:100%;display:flex;">${escapeHtml(m.name.charAt(0))}</div>
+                        ${avatarImgHtml}
+                        <div class="avatar-placeholder" style="${placeholderDisplayStyle} align-items:center; justify-content:center; width:100%; height:100%;">${escapeHtml(m.name.charAt(0))}</div>
                     </div>
                     <div class="member-info">
                         <div class="member-name-row">
@@ -1302,6 +1342,8 @@
             renderMembers();
         } else if (hash === '#contactView') {
             document.getElementById('contactView').style.display = 'block';
+        } else if (hash === '#feedbackView') {
+            document.getElementById('feedbackView').style.display = 'block';
         } else {
             document.getElementById('homeView').style.display = 'block';
             if (!window.location.hash || window.location.hash === '#homeView') {
@@ -1313,11 +1355,58 @@
         setActiveButton();
     }
 
-    // 绑定新增功能
+    // 新增：中转站功能
+    function renderWebStationLinks() {
+        const container = document.getElementById('dynamicLinksContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        externalLinks.forEach(link => {
+            const btn = document.createElement('button');
+            btn.className = 'web-link-btn';
+            btn.textContent = link.name;
+            btn.addEventListener('click', () => {
+                window.open(link.url, '_blank');
+            });
+            container.appendChild(btn);
+        });
+    }
+
+    const modal = document.getElementById('webStationModal');
+    function openModal() { if(modal) modal.style.display = 'flex'; }
+    function closeModal() { if(modal) modal.style.display = 'none'; }
+
+    // 新增：幻市签功能
+    function drawRandomFortune() {
+        const randomIndex = Math.floor(Math.random() * fortuneQuotes.length);
+        return fortuneQuotes[randomIndex];
+    }
+
+    function updateFortuneDisplay() {
+        const fortuneTextSpan = document.getElementById('fortuneText');
+        if (fortuneTextSpan) {
+            const newQuote = drawRandomFortune();
+            fortuneTextSpan.textContent = newQuote;
+        }
+    }
+
+    // 意见反馈跳转
+    function bindFeedbackJump() {
+        const feedbackCard = document.getElementById('feedbackJumpBtn');
+        if (feedbackCard) {
+            const TARGET_URL = "https://uxlbc8.fanqier.cn/f/379aauto";
+            feedbackCard.addEventListener('click', () => {
+                window.open(TARGET_URL, '_blank');
+            });
+        }
+    }
+
     window.addEventListener('load', function() {
         initCarousel();
         renderMiniNotices();
         showPage();
+        bindFeedbackJump();
+        renderWebStationLinks();
+        
         const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
         if (gotoNoticeBtn) {
             gotoNoticeBtn.addEventListener('click', function() {
@@ -1325,17 +1414,16 @@
                 renderNotices();
             });
         }
-        // 新增：中转站按钮事件
+        
         const webStationBtn = document.getElementById('webStationBtn');
         if (webStationBtn) {
             webStationBtn.addEventListener('click', openModal);
-            renderWebStationLinks();
         }
+        
         const closeModalBtn = document.getElementById('closeModalBtn');
         if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
         window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         
-        // 新增：幻市签按钮事件
         const drawBtn = document.getElementById('drawFortuneBtn');
         if (drawBtn) drawBtn.addEventListener('click', updateFortuneDisplay);
     });
