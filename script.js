@@ -262,6 +262,9 @@ async function loadData() {
         if (noticesRes.ok) {
             notices = await noticesRes.json();
             console.log(`✅ 已加载 ${notices.length} 条公告`);
+            // 数据加载完成后，重新渲染依赖公告的 UI
+            renderMiniNotices();
+            renderNotices();
         } else {
             console.warn('⚠️ notices.json 加载失败');
         }
@@ -271,14 +274,19 @@ async function loadData() {
         if (membersRes.ok) {
             members = await membersRes.json();
             console.log(`✅ 已加载 ${members.length} 名成员`);
+            // 数据加载完成后，重新渲染成员列表
+            renderMembers();
         } else {
             console.warn('⚠️ members.json 加载失败');
         }
 
-        // 初始化页面
+        // 初始化轮播图（不依赖数据）
         initCarousel();
-        renderMiniNotices();
+
+        // 显示当前页面（如果当前页面是公告页或成员页，showPage 内部会再次调用 render）
         showPage();
+
+        // 绑定其他按钮
         bindFeedbackJump();
 
         const gotoNoticeBtn = document.getElementById('gotoNoticeBtn');
